@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "service_providers",
+  "info": {
+    "singularName": "service-provider",
+    "pluralName": "service-providers",
+    "displayName": "service_provider",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "taxonomy": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::taxonomy.taxonomy"
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "synopsis": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

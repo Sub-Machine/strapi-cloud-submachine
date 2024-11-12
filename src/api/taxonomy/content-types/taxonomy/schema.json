@@ -1,0 +1,23 @@
+{
+  "kind": "collectionType",
+  "collectionName": "taxonomies",
+  "info": {
+    "singularName": "taxonomy",
+    "pluralName": "taxonomies",
+    "displayName": "taxonomy"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "primary_taxonomy": {
+      "type": "string",
+      "required": true
+    },
+    "secondary_taxonomy": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "offers",
+  "info": {
+    "singularName": "offer",
+    "pluralName": "offers",
+    "displayName": "offer",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "price": {
+      "type": "biginteger",
+      "required": true
+    },
+    "taxonomy": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::taxonomy.taxonomy"
+    },
+    "start_time": {
+      "type": "datetime"
+    },
+    "end_time": {
+      "type": "datetime"
+    },
+    "service_provider": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::service-provider.service-provider"
+    }
+  }
+}
