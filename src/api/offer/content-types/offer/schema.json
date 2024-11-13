@@ -31,6 +31,15 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::service-provider.service-provider"
+    },
+    "subscriptions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::subscription.subscription"
+    },
+    "offer_id": {
+      "type": "uid",
+      "required": true
     }
   }
 }

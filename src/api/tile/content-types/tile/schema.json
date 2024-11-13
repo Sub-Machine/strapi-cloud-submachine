@@ -12,31 +12,37 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "name": {
-      "type": "string"
+    "tile_id": {
+      "type": "uid",
+      "required": true
     },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ]
+    "offer": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::offer.offer"
+    },
+    "taxonomy": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::taxonomy.taxonomy"
     },
     "render_hint": {
       "type": "enumeration",
       "enum": [
         "Large",
         "Standard",
-        "Small"
-      ],
-      "required": true,
-      "default": "Large"
+        "Small "
+      ]
     },
-    "taxonomy": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::taxonomy.taxonomy"
+    "image": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "name": {
+      "type": "string"
     }
   }
 }

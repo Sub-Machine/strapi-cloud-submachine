@@ -12,17 +12,17 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "taxonomy": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::taxonomy.taxonomy"
+    "sp_id": {
+      "type": "uid",
+      "required": true
     },
     "name": {
       "type": "string",
       "required": true
     },
     "synopsis": {
-      "type": "string"
+      "type": "text",
+      "maxLength": 200
     },
     "image": {
       "type": "media",
@@ -31,6 +31,11 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "taxonomy": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::taxonomy.taxonomy"
     }
   }
 }

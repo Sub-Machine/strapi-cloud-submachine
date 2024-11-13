@@ -12,36 +12,37 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "collection_id": {
+      "type": "uid",
+      "required": true
+    },
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "image": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
       "allowedTypes": [
         "images"
-      ]
-    },
-    "render_hint": {
-      "type": "enumeration",
-      "enum": [
-        "Large",
-        "Standard",
-        "Small"
       ],
-      "required": true,
-      "default": "Large"
-    },
-    "tiles": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::tile.tile"
+      "type": "media",
+      "multiple": false
     },
     "taxonomy": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::taxonomy.taxonomy"
+    },
+    "render_hint": {
+      "type": "enumeration",
+      "enum": [
+        "Rail",
+        "Grid"
+      ]
+    },
+    "tiles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::tile.tile"
     }
   }
 }

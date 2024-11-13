@@ -25,7 +25,7 @@ module.exports = createCoreController("api::offer.offer", ({ strapi }) => ({
       const start = (page - 1) * pageSize;
 
       const offers = await strapi.entityService.findMany("api::offer.offer", {
-        populate: ["taxonomy", "service_provider"],
+        populate: ["taxonomy", "service_provider", "subscriptions"],
         filters: { service_provider: { id: serviceProviderId } },
         limit: pageSize,
         start: start,

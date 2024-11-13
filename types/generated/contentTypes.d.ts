@@ -623,13 +623,12 @@ export interface ApiCollectionCollection extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    name: Schema.Attribute.String;
+    collection_id: Schema.Attribute.UID & Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     image: Schema.Attribute.Media<'images'>;
-    render_hint: Schema.Attribute.Enumeration<['Large', 'Standard', 'Small']> &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'Large'>;
-    tiles: Schema.Attribute.Relation<'oneToMany', 'api::tile.tile'>;
     taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    render_hint: Schema.Attribute.Enumeration<['Rail', 'Grid']>;
+    tiles: Schema.Attribute.Relation<'oneToMany', 'api::tile.tile'>;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -693,6 +692,11 @@ export interface ApiOfferOffer extends Struct.CollectionTypeSchema {
       'oneToOne',
       'api::service-provider.service-provider'
     >;
+    subscriptions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::subscription.subscription'
+    >;
+    offer_id: Schema.Attribute.UID & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -711,11 +715,13 @@ export interface ApiPackagePackage extends Struct.CollectionTypeSchema {
     singularName: 'package';
     pluralName: 'packages';
     displayName: 'package';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
+    package_id: Schema.Attribute.UID & Schema.Attribute.Required;
     service_provider: Schema.Attribute.Relation<
       'oneToOne',
       'api::service-provider.service-provider'
@@ -749,10 +755,14 @@ export interface ApiServiceProviderServiceProvider
     draftAndPublish: true;
   };
   attributes: {
-    taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    sp_id: Schema.Attribute.UID & Schema.Attribute.Required;
     name: Schema.Attribute.String & Schema.Attribute.Required;
-    synopsis: Schema.Attribute.String;
+    synopsis: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
     image: Schema.Attribute.Media<'images'>;
+    taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -781,11 +791,13 @@ export interface ApiSubscriptionSubscription
     draftAndPublish: true;
   };
   attributes: {
-    taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    subscription_id: Schema.Attribute.UID & Schema.Attribute.Required;
     service_provider: Schema.Attribute.Relation<
       'oneToOne',
       'api::service-provider.service-provider'
     >;
+    taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    package: Schema.Attribute.Relation<'oneToOne', 'api::package.package'>;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -841,12 +853,12 @@ export interface ApiTileTile extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    name: Schema.Attribute.String;
-    image: Schema.Attribute.Media<'images'>;
-    render_hint: Schema.Attribute.Enumeration<['Large', 'Standard', 'Small']> &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'Large'>;
+    tile_id: Schema.Attribute.UID & Schema.Attribute.Required;
+    offer: Schema.Attribute.Relation<'oneToOne', 'api::offer.offer'>;
     taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    render_hint: Schema.Attribute.Enumeration<['Large', 'Standard', 'Small ']>;
+    image: Schema.Attribute.Media<'images'>;
+    name: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;

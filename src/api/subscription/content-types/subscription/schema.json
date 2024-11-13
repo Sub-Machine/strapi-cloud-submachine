@@ -12,15 +12,24 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "taxonomy": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::taxonomy.taxonomy"
+    "subscription_id": {
+      "type": "uid",
+      "required": true
     },
     "service_provider": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::service-provider.service-provider"
+    },
+    "taxonomy": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::taxonomy.taxonomy"
+    },
+    "package": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::package.package"
     }
   }
 }
