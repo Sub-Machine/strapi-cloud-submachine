@@ -47,10 +47,11 @@ module.exports = {
     //     middlewares: [],
     //   },
     // },
+
     // SP Get All Offers
     {
       method: "GET",
-      path: "/v1/offers/:providerId",
+      path: "/v1/offers/:sp_id",
       handler: "api::offer.offer.getAllOffers",
       config: {
         policies: [],
@@ -61,7 +62,7 @@ module.exports = {
     // SP Get Offer by ID
     {
       method: "GET",
-      path: "/v1/offers/:providerId/:spSubscriptionId",
+      path: "/v1/offers/:sp_id/:subscription_id",
       handler: "api::offer.offer.getOfferById",
       config: {
         policies: [],
@@ -83,7 +84,7 @@ module.exports = {
     // Update Offer
     {
       method: "PUT",
-      path: "/v1/offers/:spSubscriptionId",
+      path: "/v1/offers/:subscription_id",
       handler: "api::offer.offer.updateOffer",
       config: {
         policies: [],
@@ -94,7 +95,7 @@ module.exports = {
     // Delete Offer
     {
       method: "DELETE",
-      path: "/v1/offers/:spSubscriptionId",
+      path: "/v1/offers/:subscription_id",
       handler: "api::offer.offer.deleteOffer",
       config: {
         policies: [],
@@ -105,7 +106,7 @@ module.exports = {
     // Update Package
     {
       method: "PUT",
-      path: "/v1/offers/:spSubscriptionId/:spPackageId",
+      path: "/v1/offers/:subscription_id/:package_id",
       handler: "api::offer.offer.updatePackage",
       config: {
         policies: [],
@@ -116,7 +117,7 @@ module.exports = {
     // Delete Package
     {
       method: "DELETE",
-      path: "/v1/offers/:spSubscriptionId/:spPackageId",
+      path: "/v1/offers/:subscription_id/:package_id",
       handler: "api::offer.offer.deletePackage",
       config: {
         policies: [],

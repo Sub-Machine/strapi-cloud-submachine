@@ -9,15 +9,10 @@ const { createCoreController } = require("@strapi/strapi").factories;
 module.exports = createCoreController("api::offer.offer", ({ strapi }) => ({
   async getAllOffers(ctx) {
     try {
-      const { providerId } = ctx.params;
+      const { sp_id } = ctx.params;
 
-      if (!providerId) {
+      if (!sp_id) {
         return ctx.badRequest("Missing service provider ID.");
-      }
-
-      const serviceProviderId = parseInt(providerId, 10);
-      if (isNaN(serviceProviderId)) {
-        return ctx.badRequest("Service provider ID must be a valid number.");
       }
 
       const page = parseInt(ctx.query.page, 10) || 1;
@@ -25,14 +20,35 @@ module.exports = createCoreController("api::offer.offer", ({ strapi }) => ({
       const start = (page - 1) * pageSize;
 
       const offers = await strapi.entityService.findMany("api::offer.offer", {
-        populate: ["taxonomy", "service_provider", "subscriptions"],
-        filters: { service_provider: { id: serviceProviderId } },
+        populate: {
+          taxonomy: true,
+          service_provider: {
+            populate: ["image", "taxonomy"],
+          },
+          subscriptions: {
+            populate: {
+              taxonomy: true,
+              service_provider: {
+                populate: ["image", "taxonomy"],
+              },
+              package: {
+                populate: {
+                  taxonomy: true,
+                  service_provider: {
+                    populate: ["image", "taxonomy"],
+                  },
+                },
+              },
+            },
+          },
+        },
+        filters: { service_provider: { id: sp_id } },
         limit: pageSize,
         start: start,
       });
 
       const totalOffers = await strapi.entityService.count("api::offer.offer", {
-        filters: { service_provider: { id: serviceProviderId } },
+        filters: { service_provider: { id: sp_id } },
       });
 
       const pageCount = Math.ceil(totalOffers / pageSize);
@@ -45,6 +61,7 @@ module.exports = createCoreController("api::offer.offer", ({ strapi }) => ({
 
       return ctx.send({
         data: offers,
+        message: "Get offers successfully!",
         meta: {
           pagination: {
             page,
@@ -63,169 +80,346 @@ module.exports = createCoreController("api::offer.offer", ({ strapi }) => ({
 
   async getOfferById(ctx) {
     try {
-      const { providerId, spSubscriptionId } = ctx.params;
+      const { sp_id, subscription_id } = ctx.params;
 
-      if (!providerId) {
+      if (!sp_id) {
         return ctx.badRequest("Missing service provider ID.");
       }
-      if (!spSubscriptionId) {
+      if (!subscription_id) {
         return ctx.badRequest("Missing subscription ID.");
       }
 
-      const serviceProviderId = parseInt(providerId, 10);
-      if (isNaN(serviceProviderId)) {
-        return ctx.badRequest("Service provider ID must be a valid number.");
-      }
-      const subscriptionId = parseInt(spSubscriptionId, 10);
-      if (isNaN(subscriptionId)) {
-        return ctx.badRequest("Subscription ID must be a valid number.");
+      const offers = await strapi.entityService.findMany("api::offer.offer", {
+        populate: {
+          taxonomy: true,
+          service_provider: {
+            populate: ["image", "taxonomy"],
+          },
+          subscriptions: {
+            populate: {
+              taxonomy: true,
+              service_provider: {
+                populate: ["image", "taxonomy"],
+              },
+              package: {
+                populate: {
+                  taxonomy: true,
+                  service_provider: {
+                    populate: ["image", "taxonomy"],
+                  },
+                },
+              },
+            },
+          },
+        },
+        filters: {
+          service_provider: { id: sp_id },
+          subscriptions: { id: subscription_id },
+        },
+      });
+
+      if (!offers || offers.length === 0) {
+        return ctx.notFound(
+          "No offers found for the given service provider ID."
+        );
       }
 
       return ctx.send({
-        data: {
-          provider_id: providerId,
-          sp_subscription_id: spSubscriptionId,
-          message: "Get offer by id controller is working",
-        },
+        data: offers,
+        message: "Get Offer by subscription successfully!",
       });
     } catch (error) {
-      console.error("Error fetching data:", error);
       return ctx.internalServerError(
         "An error occurred while fetching the data."
       );
     }
   },
+
   async getPackagePrice(ctx) {
     try {
-      return ctx.send({
-        data: {
-          message: "Get package price controller is working",
+      const subscriptionId = ctx.query.subscription;
+      const packageId = ctx.query.package;
+
+      if (!subscriptionId) {
+        return ctx.badRequest("Missing subscription ID.");
+      }
+      if (!packageId) {
+        return ctx.badRequest("Missing package ID.");
+      }
+
+      const offers = await strapi.entityService.findMany("api::offer.offer", {
+        populate: {
+          taxonomy: true,
+          service_provider: {
+            populate: ["image", "taxonomy"],
+          },
+          subscriptions: {
+            populate: {
+              taxonomy: true,
+              service_provider: {
+                populate: ["image", "taxonomy"],
+              },
+              package: {
+                populate: {
+                  taxonomy: true,
+                  service_provider: {
+                    populate: ["image", "taxonomy"],
+                  },
+                },
+              },
+            },
+          },
+        },
+        filters: {
+          subscriptions: {
+            id: subscriptionId,
+            package: { id: packageId },
+          },
         },
       });
+
+      if (!offers || offers.length === 0) {
+        return ctx.notFound(
+          "No offers found for the given subscription and package ID."
+        );
+      }
+
+      return ctx.send({
+        data: offers,
+        message: "Get Offer by subscription successfully!",
+      });
     } catch (error) {
-      console.error("Error fetching data:", error);
       return ctx.internalServerError(
         "An error occurred while fetching the data."
       );
     }
   },
+
   async updateOffer(ctx) {
     try {
-      const { spSubscriptionId } = ctx.params;
+      const { subscription_id } = ctx.params;
 
-      if (!spSubscriptionId) {
+      if (!subscription_id) {
         return ctx.badRequest("Missing subscription ID.");
       }
 
-      const subscriptionId = parseInt(spSubscriptionId, 10);
+      const subscriptionId = parseInt(subscription_id, 10);
       if (isNaN(subscriptionId)) {
         return ctx.badRequest("Subscription ID must be a valid number.");
       }
 
-      return ctx.send({
-        data: {
-          sp_subscription_id: spSubscriptionId,
-          message: "Update offer controller is working",
+      const offer = await strapi.entityService.findMany("api::offer.offer", {
+        populate: "subscriptions",
+        filters: {
+          subscriptions: { id: subscription_id },
         },
       });
+
+      if (!offer || offer.length === 0) {
+        return ctx.notFound("No offers found for the given subscription ID.");
+      }
+
+      const updatedOffer = await strapi.entityService.update(
+        "api::offer.offer",
+        offer[0].id,
+        {
+          data: ctx.request.body,
+          populate: {
+            taxonomy: true,
+            service_provider: {
+              populate: ["image", "taxonomy"],
+            },
+            subscriptions: {
+              populate: {
+                taxonomy: true,
+                service_provider: {
+                  populate: ["image", "taxonomy"],
+                },
+                package: {
+                  populate: {
+                    taxonomy: true,
+                    service_provider: {
+                      populate: ["image", "taxonomy"],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }
+      );
+
+      if (!updatedOffer) {
+        return ctx.notFound("Offer not found.");
+      }
+
+      return ctx.send({
+        data: updatedOffer,
+        message: "Offer updated successfully.",
+      });
     } catch (error) {
-      console.error("Error fetching data:", error);
       return ctx.internalServerError(
-        "An error occurred while fetching the data."
+        "An error occurred while updating the offer."
       );
     }
   },
+
   async deleteOffer(ctx) {
     try {
-      const { spSubscriptionId } = ctx.params;
+      const { subscription_id } = ctx.params;
 
-      if (!spSubscriptionId) {
+      if (!subscription_id) {
         return ctx.badRequest("Missing subscription ID.");
       }
 
-      const subscriptionId = parseInt(spSubscriptionId, 10);
+      const subscriptionId = parseInt(subscription_id, 10);
       if (isNaN(subscriptionId)) {
         return ctx.badRequest("Subscription ID must be a valid number.");
       }
 
-      return ctx.send({
-        data: {
-          sp_subscription_id: spSubscriptionId,
-          message: "Delete offer controller is working",
+      const offer = await strapi.entityService.findMany("api::offer.offer", {
+        populate: "subscriptions",
+        filters: {
+          subscriptions: { id: subscription_id },
         },
       });
+      console.log("<== offer ==>", offer);
+
+      if (!offer || offer.length === 0) {
+        return ctx.notFound("No offers found for the given subscription ID.");
+      }
+
+      const deletedOffer = await strapi.entityService.delete(
+        "api::offer.offer",
+        offer[0].id
+      );
+
+      if (!deletedOffer) {
+        return ctx.notFound("Offer not found.");
+      }
+
+      return ctx.send({
+        data: deletedOffer,
+        message: "Offer deleted successfully.",
+      });
     } catch (error) {
-      console.error("Error fetching data:", error);
       return ctx.internalServerError(
-        "An error occurred while fetching the data."
+        "An error occurred while deleting the offer."
       );
     }
   },
+
   async updatePackage(ctx) {
     try {
-      const { spPackageId, spSubscriptionId } = ctx.params;
+      const { package_id, subscription_id } = ctx.params;
 
-      if (!spPackageId) {
-        return ctx.badRequest("Missing service provider ID.");
-      }
-      if (!spSubscriptionId) {
-        return ctx.badRequest("Missing subscription ID.");
+      if (!package_id || !subscription_id) {
+        return ctx.badRequest("Missing package ID or subscription ID.");
       }
 
-      const serviceProviderId = parseInt(spPackageId, 10);
-      if (isNaN(serviceProviderId)) {
-        return ctx.badRequest("Service provider ID must be a valid number.");
+      const packageId = parseInt(package_id, 10);
+      const subscriptionId = parseInt(subscription_id, 10);
+
+      if (isNaN(packageId) || isNaN(subscriptionId)) {
+        return ctx.badRequest(
+          "Both package ID and subscription ID must be valid numbers."
+        );
       }
-      const subscriptionId = parseInt(spSubscriptionId, 10);
-      if (isNaN(subscriptionId)) {
-        return ctx.badRequest("Subscription ID must be a valid number.");
+
+      const data = await strapi.entityService.findMany(
+        "api::subscription.subscription",
+        {
+          populate: "package",
+          filters: {
+            id: subscription_id,
+            package: { id: package_id },
+          },
+        }
+      );
+
+      if (!data || data.length === 0) {
+        return ctx.notFound("No offers found for the given subscription ID.");
+      }
+
+      const updatedPackage = await strapi.entityService.update(
+        "api::package.package",
+        data[0].package.id,
+        {
+          data: ctx.request.body,
+          populate: {
+            taxonomy: true,
+            service_provider: {
+              populate: ["image", "taxonomy"],
+            },
+          },
+        }
+      );
+
+      if (!updatedPackage) {
+        return ctx.notFound("Package not found.");
       }
 
       return ctx.send({
-        data: {
-          provider_id: serviceProviderId,
-          sp_subscription_id: spSubscriptionId,
-          message: "Update package by id controller is working",
-        },
+        data: updatedPackage,
+        message: "Package updated successfully.",
       });
     } catch (error) {
-      console.error("Error fetching data:", error);
       return ctx.internalServerError(
-        "An error occurred while fetching the data."
+        "An error occurred while updating the package.",
+        error
       );
     }
   },
+
   async deletePackage(ctx) {
     try {
-      const { spPackageId, spSubscriptionId } = ctx.params;
+      const { package_id, subscription_id } = ctx.params;
 
-      if (!spPackageId) {
-        return ctx.badRequest("Missing service provider ID.");
-      }
-      if (!spSubscriptionId) {
-        return ctx.badRequest("Missing subscription ID.");
+      if (!package_id || !subscription_id) {
+        return ctx.badRequest("Missing package ID or subscription ID.");
       }
 
-      const serviceProviderId = parseInt(spPackageId, 10);
-      if (isNaN(serviceProviderId)) {
-        return ctx.badRequest("Service provider ID must be a valid number.");
+      const packageId = parseInt(package_id, 10);
+      const subscriptionId = parseInt(subscription_id, 10);
+
+      if (isNaN(packageId) || isNaN(subscriptionId)) {
+        return ctx.badRequest(
+          "Both package ID and subscription ID must be valid numbers."
+        );
       }
-      const subscriptionId = parseInt(spSubscriptionId, 10);
-      if (isNaN(subscriptionId)) {
-        return ctx.badRequest("Subscription ID must be a valid number.");
+
+      const data = await strapi.entityService.findMany(
+        "api::subscription.subscription",
+        {
+          populate: "package",
+          filters: {
+            id: subscription_id,
+            package: { id: package_id },
+          },
+        }
+      );
+
+      if (!data || data.length === 0) {
+        return ctx.notFound("No offers found for the given subscription ID.");
+      }
+
+      const deletedPackage = await strapi.entityService.delete(
+        "api::package.package",
+        data[0].package.id
+      );
+
+      if (!deletedPackage) {
+        return ctx.notFound("Package not found.");
       }
 
       return ctx.send({
-        data: {
-          provider_id: serviceProviderId,
-          sp_subscription_id: spSubscriptionId,
-          message: "Delete Package by id controller is working",
-        },
+        data: deletedPackage,
+        message: "Package deleted successfully.",
       });
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error deleting package:", error);
       return ctx.internalServerError(
-        "An error occurred while fetching the data."
+        "An error occurred while deleting the package."
       );
     }
   },
