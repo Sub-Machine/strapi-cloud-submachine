@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "collections",
+  "info": {
+    "singularName": "collection",
+    "pluralName": "collections",
+    "displayName": "collection",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "collection_id": {
+      "type": "uid",
+      "required": true
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "image": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "taxonomy": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::taxonomy.taxonomy"
+    },
+    "render_hint": {
+      "type": "enumeration",
+      "enum": [
+        "Rail",
+        "Grid"
+      ]
+    },
+    "tiles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::tile.tile"
+    }
+  }
+}

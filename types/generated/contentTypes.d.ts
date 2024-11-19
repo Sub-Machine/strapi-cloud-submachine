@@ -611,6 +611,39 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCollectionCollection extends Struct.CollectionTypeSchema {
+  collectionName: 'collections';
+  info: {
+    singularName: 'collection';
+    pluralName: 'collections';
+    displayName: 'collection';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    collection_id: Schema.Attribute.UID & Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    image: Schema.Attribute.Media<'images'>;
+    taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    render_hint: Schema.Attribute.Enumeration<['Rail', 'Grid']>;
+    tiles: Schema.Attribute.Relation<'oneToMany', 'api::tile.tile'>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::collection.collection'
+    >;
+  };
+}
+
 export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   collectionName: 'globals';
   info: {
@@ -636,6 +669,205 @@ export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
       Schema.Attribute.Private;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::global.global'>;
+  };
+}
+
+export interface ApiOfferOffer extends Struct.CollectionTypeSchema {
+  collectionName: 'offers';
+  info: {
+    singularName: 'offer';
+    pluralName: 'offers';
+    displayName: 'offer';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    price: Schema.Attribute.BigInteger & Schema.Attribute.Required;
+    taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    start_time: Schema.Attribute.DateTime;
+    end_time: Schema.Attribute.DateTime;
+    service_provider: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::service-provider.service-provider'
+    >;
+    subscriptions: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::subscription.subscription'
+    >;
+    offer_id: Schema.Attribute.UID & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::offer.offer'>;
+  };
+}
+
+export interface ApiPackagePackage extends Struct.CollectionTypeSchema {
+  collectionName: 'packages';
+  info: {
+    singularName: 'package';
+    pluralName: 'packages';
+    displayName: 'package';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    package_id: Schema.Attribute.UID & Schema.Attribute.Required;
+    service_provider: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::service-provider.service-provider'
+    >;
+    taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::package.package'
+    >;
+  };
+}
+
+export interface ApiServiceProviderServiceProvider
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'service_providers';
+  info: {
+    singularName: 'service-provider';
+    pluralName: 'service-providers';
+    displayName: 'service_provider';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    sp_id: Schema.Attribute.UID & Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    synopsis: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    image: Schema.Attribute.Media<'images'>;
+    taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::service-provider.service-provider'
+    >;
+  };
+}
+
+export interface ApiSubscriptionSubscription
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'subscriptions';
+  info: {
+    singularName: 'subscription';
+    pluralName: 'subscriptions';
+    displayName: 'subscription';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    subscription_id: Schema.Attribute.UID & Schema.Attribute.Required;
+    service_provider: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::service-provider.service-provider'
+    >;
+    taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    package: Schema.Attribute.Relation<'oneToOne', 'api::package.package'>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::subscription.subscription'
+    >;
+  };
+}
+
+export interface ApiTaxonomyTaxonomy extends Struct.CollectionTypeSchema {
+  collectionName: 'taxonomies';
+  info: {
+    singularName: 'taxonomy';
+    pluralName: 'taxonomies';
+    displayName: 'taxonomy';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    primary_taxonomy: Schema.Attribute.String & Schema.Attribute.Required;
+    secondary_taxonomy: Schema.Attribute.String & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::taxonomy.taxonomy'
+    >;
+  };
+}
+
+export interface ApiTileTile extends Struct.CollectionTypeSchema {
+  collectionName: 'tiles';
+  info: {
+    singularName: 'tile';
+    pluralName: 'tiles';
+    displayName: 'tile';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    tile_id: Schema.Attribute.UID & Schema.Attribute.Required;
+    offer: Schema.Attribute.Relation<'oneToOne', 'api::offer.offer'>;
+    taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
+    render_hint: Schema.Attribute.Enumeration<['Large', 'Standard', 'Small ']>;
+    image: Schema.Attribute.Media<'images'>;
+    name: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::tile.tile'>;
   };
 }
 
@@ -1018,7 +1250,14 @@ declare module '@strapi/strapi' {
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
       'api::category.category': ApiCategoryCategory;
+      'api::collection.collection': ApiCollectionCollection;
       'api::global.global': ApiGlobalGlobal;
+      'api::offer.offer': ApiOfferOffer;
+      'api::package.package': ApiPackagePackage;
+      'api::service-provider.service-provider': ApiServiceProviderServiceProvider;
+      'api::subscription.subscription': ApiSubscriptionSubscription;
+      'api::taxonomy.taxonomy': ApiTaxonomyTaxonomy;
+      'api::tile.tile': ApiTileTile;
       'admin::permission': AdminPermission;
       'admin::user': AdminUser;
       'admin::role': AdminRole;

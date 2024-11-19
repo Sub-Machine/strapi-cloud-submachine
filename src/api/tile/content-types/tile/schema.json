@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tiles",
+  "info": {
+    "singularName": "tile",
+    "pluralName": "tiles",
+    "displayName": "tile",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tile_id": {
+      "type": "uid",
+      "required": true
+    },
+    "offer": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::offer.offer"
+    },
+    "taxonomy": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::taxonomy.taxonomy"
+    },
+    "render_hint": {
+      "type": "enumeration",
+      "enum": [
+        "Large",
+        "Standard",
+        "Small "
+      ]
+    },
+    "image": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "name": {
+      "type": "string"
+    }
+  }
+}
