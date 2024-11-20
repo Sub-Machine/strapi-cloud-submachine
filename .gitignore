@@ -102,7 +102,7 @@ node_modules
 ############################
 
 .yarn/*
-yarn.lock
+# yarn.lock
 !.yarn/cache
 !.yarn/unplugged
 !.yarn/patches
