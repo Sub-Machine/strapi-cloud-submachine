@@ -8,7 +8,7 @@
 //   only: ["find", "findOne"],
 // });
 
-const { createCoreRouter } = require("@strapi/strapi").factories;
+// const { createCoreRouter } = require("@strapi/strapi").factories;
 
 const customOfferRoutes = require("./custom-offer.js");
 
