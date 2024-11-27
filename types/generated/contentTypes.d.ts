@@ -856,7 +856,7 @@ export interface ApiTileTile extends Struct.CollectionTypeSchema {
     tile_id: Schema.Attribute.UID & Schema.Attribute.Required;
     offer: Schema.Attribute.Relation<'oneToOne', 'api::offer.offer'>;
     taxonomy: Schema.Attribute.Relation<'oneToOne', 'api::taxonomy.taxonomy'>;
-    render_hint: Schema.Attribute.Enumeration<['Large', 'Standard', 'Small ']>;
+    render_hint: Schema.Attribute.Enumeration<['Large', 'Standard', 'Small']>;
     image: Schema.Attribute.Media<'images'>;
     name: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
