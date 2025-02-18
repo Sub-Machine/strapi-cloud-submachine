@@ -697,6 +697,8 @@ export interface ApiOfferOffer extends Struct.CollectionTypeSchema {
       'api::subscription.subscription'
     >;
     offer_id: Schema.Attribute.UID & Schema.Attribute.Required;
+    stripe_product_id: Schema.Attribute.String;
+    stripe_price: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;

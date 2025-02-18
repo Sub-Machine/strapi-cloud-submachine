@@ -44,7 +44,7 @@ module.exports = {
       const params = {
         TopicArn:
           "arn:aws:sns:us-east-1:180939226808:offer-webhook-hubspot-product",
-        Message: JSON.stringify(requiredFields),
+        Message: JSON.stringify({ hubspot: requiredFields, offer: fullOffer }),
         Subject: `New Offer Created: ${requiredFields.name}`,
       };
 
