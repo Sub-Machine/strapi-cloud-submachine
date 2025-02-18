@@ -195,6 +195,43 @@ module.exports = createCoreController("api::offer.offer", ({ strapi }) => ({
     }
   },
 
+  async updateOfferById(ctx) {
+    try {
+      const { id } = ctx.params;
+      const { stripe_product_id, stripe_price } = ctx.request.body;
+
+      if (!id) {
+        return ctx.badRequest("Missing offer ID.");
+      }
+
+      const offer = await strapi.entityService.findOne("api::offer.offer", id);
+
+      if (!offer) {
+        return ctx.notFound("No offers found for the given subscription ID.");
+      }
+
+      const updatedOffer = await strapi.entityService.update(
+        "api::offer.offer",
+        offer.id,
+        {
+          data: {
+            stripe_product_id: stripe_product_id,
+            stripe_price: stripe_price,
+          },
+        }
+      );
+
+      return ctx.send({
+        data: updatedOffer,
+        message: "Offer updated successfully.",
+      });
+    } catch (error) {
+      return ctx.internalServerError(
+        "An error occurred while updating the offer."
+      );
+    }
+  },
+
   async updateOffer(ctx) {
     try {
       const { subscription_id } = ctx.params;

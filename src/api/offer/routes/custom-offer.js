@@ -81,6 +81,17 @@ module.exports = {
       },
     },
 
+    // Update Offer by offer id
+    {
+      method: "PUT",
+      path: "/v1/offer/:id",
+      handler: "api::offer.offer.updateOfferById",
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
+
     // Update Offer
     {
       method: "PUT",
